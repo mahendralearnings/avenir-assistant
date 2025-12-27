@@ -1,6 +1,6 @@
 import os, json, numpy as np, streamlit as st
-from dotenv import load_dotenv
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import google.generativeai as genai
 
 # Use one of the supported models from list_models()
@@ -11,14 +11,11 @@ def load_index():
         meta = json.load(f)
     docs = meta["docs"]
     info = meta["meta"]
-
     X = np.load("index/embeddings.npy")
-    index = faiss.read_index("index/faiss.index")
-    return index, X, docs, info
+    return X, docs, info
 
 def embed_query(vectorizer, text):
     vec = vectorizer.transform([text]).toarray().astype("float32")
-    faiss.normalize_L2(vec)
     return vec
 
 def build_context(docs, info, indices):
@@ -42,13 +39,12 @@ def answer_with_gemini(context, question):
     return response.text
 
 def main():
-    load_dotenv()
-    gemini_key = os.getenv("GEMINI_API_KEY")
-    if not gemini_key:
-        st.error("GEMINI_API_KEY missing in .env")
+    api_key = st.secrets.get("GEMINI_API_KEY", "")
+    if not api_key:
+        st.error("GEMINI_API_KEY missing in Streamlit Secrets")
         st.stop()
 
-    genai.configure(api_key=gemini_key)
+    genai.configure(api_key=api_key)
 
     st.set_page_config(page_title="AvenirEdge AI Assistant", page_icon="🤖")
     st.title("🤖 AvenirEdge AI Assistant")
@@ -57,9 +53,8 @@ def main():
     @st.cache_resource
     def cached_load():
         return load_index()
-    index, X, docs, info = cached_load()
+    X, docs, info = cached_load()
 
-    # Load vectorizer with same vocab as build_index
     vectorizer = TfidfVectorizer(max_features=768)
     vectorizer.fit(docs)
 
@@ -69,8 +64,8 @@ def main():
     if st.button("Get answer") and query.strip():
         try:
             qvec = embed_query(vectorizer, query)
-            scores, idxs = index.search(qvec.reshape(1, -1), k)
-            top_indices = idxs[0].tolist()
+            sims = cosine_similarity(qvec, X)[0]
+            top_indices = np.argsort(sims)[-k:][::-1]
             context = build_context(docs, info, top_indices)
             answer = answer_with_gemini(context, query)
             st.markdown("### Answer")
