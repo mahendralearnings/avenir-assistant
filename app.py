@@ -1,4 +1,4 @@
-import os, json, numpy as np, faiss, streamlit as st
+import os, json, numpy as np, streamlit as st
 from dotenv import load_dotenv
 from sklearn.feature_extraction.text import TfidfVectorizer
 import google.generativeai as genai
