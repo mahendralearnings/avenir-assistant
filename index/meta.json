@@ -1,0 +1,16 @@
+{
+  "docs": [
+    "AvenirEdge offers beginner to advanced courses in AI, machine learning, data science, and prompt engineering. Each course includes hands-on projects, quizzes, and mentorship support. Popular tracks include: - AI Foundations - Building with LLMs - Deploying ML Models - Prompt Engineering for Chatbots",
+    "Q: What is AvenirEdge? A: AvenirEdge is a learning platform focused on AI and emerging technologies. Q: Do I need coding experience? A: No. Many beginner courses are designed for non-coders. Q: How do I get mentorship? A: Mentorship is available through Slack and weekly live sessions."
+  ],
+  "meta": [
+    {
+      "source": "course.txt",
+      "chunk_id": 0
+    },
+    {
+      "source": "faq.txt",
+      "chunk_id": 0
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Q: What is AvenirEdge?
+A: AvenirEdge is a learning platform focused on AI and emerging technologies.
+
+Q: Do I need coding experience?
+A: No. Many beginner courses are designed for non-coders.
+
+Q: How do I get mentorship?
+A: Mentorship is available through Slack and weekly live sessions.
